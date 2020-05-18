@@ -70,29 +70,39 @@ func (m *DingTalk) Send(msg *Msg, retry_num ...int) error {
     if len(retry_num) > 0 && retry_num[0] > 0 {
         attempt_count = 1 + retry_num[0]
     }
-    return zretry.DoRetry(func() error {
-        return m.send(req)
-    }, 0, int32(attempt_count), nil)
-}
 
-func (m *DingTalk) send(req *http.Request) error {
-    resp, err := m.client.Do(req)
+    var send_result *SendResult
+    err = zretry.DoRetry(func() error {
+        result, err := m.send(req)
+        if err != nil {
+            return err
+        }
+        send_result = result
+        return nil
+    }, 0, int32(attempt_count), nil)
     if err != nil {
         return err
+    }
+
+    if send_result.ErrCode == 0 {
+        return nil
+    }
+    return fmt.Errorf("<%d>: %s", send_result.ErrCode, send_result.ErrMsg)
+}
+
+func (m *DingTalk) send(req *http.Request) (*SendResult, error) {
+    resp, err := m.client.Do(req)
+    if err != nil {
+        return nil, err
     }
     defer resp.Body.Close()
 
     result := new(SendResult)
     err = json.NewDecoder(resp.Body).Decode(result)
     if err != nil {
-        return err
+        return nil, err
     }
-
-    if result.ErrCode == 0 {
-        return nil
-    }
-
-    return fmt.Errorf("<%d>: %s", result.ErrCode, result.ErrMsg)
+    return result, err
 }
 
 func (m *DingTalk) makeSign() (timestamp, sha string) {
