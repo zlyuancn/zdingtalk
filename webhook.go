@@ -84,6 +84,7 @@ func (m *DingTalk) Send(msg *Msg, retry_num ...int) error {
         return err
     }
 
+    // 绝大部分情况下, 如果返回值解析成功, 但是返回了错误码, 重试也没用, 所以在重试器外部检查返回状态
     if send_result.ErrCode == 0 {
         return nil
     }
