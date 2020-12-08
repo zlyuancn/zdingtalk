@@ -29,13 +29,6 @@ func main() {
 robot.NewDingTalk("你的access_token").SetSecret("你的secret")
 ```
 
-# 使用自定义http客户端
-
-```go
-client := &http.Client{}
-robot.NewDingTalk("你的access_token").SetHttpClient(client)
-```
-
 # 失败重试
 
 ```go

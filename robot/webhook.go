@@ -13,7 +13,6 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -21,30 +20,24 @@ import (
 	"time"
 
 	"github.com/zlyuancn/zretry"
+
+	"github.com/zlyuancn/zdingtalk/utils"
 )
 
 type DingTalk struct {
 	token  string
 	secret string
-	client *http.Client
 }
 
 func NewDingTalk(access_token string) *DingTalk {
 	return &DingTalk{
-		token:  access_token,
-		client: &http.Client{},
+		token: access_token,
 	}
 }
 
 // 设置secret
 func (m *DingTalk) SetSecret(secret string) *DingTalk {
 	m.secret = secret
-	return m
-}
-
-// 设置自定义http客户端
-func (m *DingTalk) SetHttpClient(client *http.Client) *DingTalk {
-	m.client = client
 	return m
 }
 
@@ -93,18 +86,9 @@ func (m *DingTalk) Send(msg *Msg, retry_num ...int) error {
 }
 
 func (m *DingTalk) send(req *http.Request) (*SendResult, error) {
-	resp, err := m.client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	result := new(SendResult)
-	err = json.NewDecoder(resp.Body).Decode(result)
-	if err != nil {
-		return nil, err
-	}
-	return result, err
+	var result SendResult
+	err := utils.Request(req, &result)
+	return &result, err
 }
 
 func (m *DingTalk) makeSign() (timestamp, sha string) {
