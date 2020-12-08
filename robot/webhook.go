@@ -23,6 +23,7 @@ import (
     "github.com/zlyuancn/zretry"
 )
 
+// https://ding-doc.dingtalk.com/doc/#/serverapi2/hoy7iv
 const DingTalkApiUrl = "https://oapi.dingtalk.com/robot/send"
 
 type DingTalk struct {
