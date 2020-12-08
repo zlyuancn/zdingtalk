@@ -1,6 +1,15 @@
 
 # 朴实无华的dingtalk机器人, 支持6种消息类型, 支持secret, 支持失败重试, 两行代码就能推送, github上再也没有比这个更简单方便快捷的钉钉消息了
 
+# 支持
+
+- [x] text类型
+- [x] link类型
+- [x] markdown类型
+- [x] 整体跳转ActionCard类型
+- [x] 独立跳转ActionCard类型
+- [x] FeedCard类型
+
 # 示例
 
 ```go
