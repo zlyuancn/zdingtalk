@@ -23,6 +23,8 @@ var defaultHttpClient = &http.Client{
 }
 
 // 设置http请求客户端
+//
+// 注意: 这个方法应该在最开始仅调用一次, 并且设计上来说它只需要在开始的时候调用一次才合理
 func SetHttpClient(client *http.Client) {
 	defaultHttpClient = client
 }
