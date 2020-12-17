@@ -6,7 +6,7 @@
 -------------------------------------------------
 */
 
-package zdingtalk
+package robot
 
 import (
 	"bytes"
